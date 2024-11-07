@@ -16,7 +16,7 @@ This is minimal implementation of the RAG model for question answering.
 export PS1="\[\033[01;32m\]\u@\h:\w\n\[\033[00m\]\$ "
 ```
 
-##Installation
+###Installation
 
 ###Install the required packages 
 
@@ -31,3 +31,10 @@ $ cp .env.example .env
 ```
 
 Set your enviroments variables in the `.env` file. Like 'OPENAI_API_KEY` value .
+
+
+### so you don't need to reload your server on every edit 
+
+```bash
+$ uvicorn main:app --reload
+```
