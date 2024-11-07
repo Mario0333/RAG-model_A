@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "699e2f08-c047-4bd2-bec1-db99cea355b8",
+		"name": "mini-rag-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39389569"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/welcome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/welcome",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"welcome"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
