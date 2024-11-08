@@ -1,0 +1,5 @@
+How MVC Works Together ??
+User Interaction → A user interacts with the application (e.g., clicks a button).
+Controller Handles Input → The Controller interprets the user action and makes requests to the Model.
+Model Updates → The Model performs any necessary updates, like querying or modifying the database.
+View Renders → The Controller selects a View to present the updated data, which is then displayed to the user.
