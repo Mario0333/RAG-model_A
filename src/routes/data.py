@@ -2,11 +2,10 @@ from fastapi import FastAPI, APIRouter, Depends, UploadFile, status
 from fastapi.responses import JSONResponse
 import os
 from helpers.config import get_settings, Settings
-from controllers import DataController, ProjectController, ProcessController  # Import correctly
+from controllers import DataController, ProjectController, ErrorController, ProcessController  # Import correctly
 import aiofiles
 from models import ResponseSignal
 import logging
-# from schemes import ProcessRequest
 from routes.schemes import ProcessRequest
 
 logger = logging.getLogger('uvicorn.error')
@@ -59,8 +58,25 @@ async def upload_data(project_id: str, file: UploadFile, app_settings: Settings 
 @data_router.post("/process/{project_id}")
 async def process_endpoint(project_id: str, process_request:ProcessRequest):
     file_id = process_request.file_id
-    processcontroller = ProcessController(project_id= project_id)
 
+    #check if the project not in assets
+    if not ErrorController().project_found(project_id):
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "signal":ResponseSignal.PROCESSING_FAILED.value
+            }
+        )
+    #check if the file not in project dir 
+    if not ErrorController().file_found(project_id,file_id):
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "signal":ResponseSignal.PROCESSING_FAILED.value
+            }
+        )        
+    #start Processing
+    processcontroller = ProcessController(project_id= project_id)
 
     file_content = processcontroller.get_file_content(file_id=file_id)
     file_chunks = processcontroller.process_file_content(
