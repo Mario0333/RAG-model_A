@@ -64,7 +64,7 @@ async def process_endpoint(project_id: str, process_request:ProcessRequest):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
-                "signal":ResponseSignal.PROCESSING_FAILED.value
+                "signal":ResponseSignal.PROCESSING_PROJECT_NOT_FOUND.value
             }
         )
     #check if the file not in project dir 
@@ -72,7 +72,7 @@ async def process_endpoint(project_id: str, process_request:ProcessRequest):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
-                "signal":ResponseSignal.PROCESSING_FAILED.value
+                "signal":ResponseSignal.PROCESSING_FILE_NOT_FOUND.value
             }
         )        
     #start Processing
