@@ -40,19 +40,21 @@ class ProjectModel(BaseDataModel):
             total_pages += 1
 
         # Create a cursor with skip and limit for pagination
-        cursor = self.collection.find().skip((page - 1) * page_size).limit(page_size)
+        cursor = self.collection.find().skip( (page-1) * page_size ).limit(page_size)
         # Explanation of the code:
         # .find() queries all documents in the collection.
         # .skip() skips a calculated number of documents based on the page number.
         # .limit() restricts the number of documents returned to the page size.
         # Using cursor is memory-efficient, as it allows MongoDB to fetch results in batches.
 
-        documents = list(cursor)
+        # documents = list(cursor)
 
-        projects=[]
-        async for doc in cursor:
-            projects.append(Project(**doc))
+        projects = []
+        async for document in cursor:
+            projects.append(
+                Project(**document)
+            )
 
-        return projects, total_pages 
+        return projects, total_pages
     
     
