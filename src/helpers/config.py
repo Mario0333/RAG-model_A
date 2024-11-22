@@ -10,8 +10,8 @@ class Settings(BaseSettings):
 
     FILE_DEFAULT_CHUNK_SIZE: int
 
-    MONGODG_URL: str # Correct usage of ClassVar for class-level variables
-    MONGODG_DATABASE: str       # Correctly annotate this as a regular field
+    MONGODB_URL: str # Correct usage of ClassVar for class-level variables
+    MONGODB_DATABASE: str       # Correctly annotate this as a regular field
 
     class Config:
         env_file = ".env"

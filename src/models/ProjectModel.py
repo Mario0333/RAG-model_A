@@ -1,12 +1,12 @@
 from .BaseDataModel import BaseDataModel
 from .db_schemes import Project
-from .enums import DataBaseEnum
+from .enums.DataBaseEnum import DataBaseEnum
 
 class ProjectModel(BaseDataModel):
 
     def __init__(self, db_client: object):
         super().__init__(db_client)
-        self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.VALUE]
+        self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.value]
 
     async def create_project(self, project : Project):
         result = await self.collection.insert_one(project.model_dump())
