@@ -8,6 +8,8 @@ from models import ResponseSignal
 import logging
 from routes.schemes import ProcessRequest
 from models.ProjectModel import ProjectModel
+from models.ChunkModel import ChunkModel
+from models.db_schemes.data_chunk import DataChunk
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -63,9 +65,11 @@ async def upload_data(request:Request ,project_id: str, file: UploadFile, app_se
         )
 
 @data_router.post("/process/{project_id}")
-async def process_endpoint(project_id: str, process_request:ProcessRequest):
+async def process_endpoint(request : Request,project_id: str, process_request:ProcessRequest):
     file_id = process_request.file_id
-
+    chunk_size = process_request.chunk_size
+    overlab_size = process_request.overlap_size
+    do_reset = process_request.do_reset
     """
     #check if the project not in assets
     if not ErrorController().project_found(project_id):
@@ -85,6 +89,13 @@ async def process_endpoint(project_id: str, process_request:ProcessRequest):
         )    
     """
     
+    project_model = ProjectModel(
+        db_client=request.app.db_client
+    )
+
+    project = await project_model.get_project_or_create_one(
+        project_id=project_id
+    )
     
     #start Processing
     processcontroller = ProcessController(project_id= project_id)
@@ -105,4 +116,26 @@ async def process_endpoint(project_id: str, process_request:ProcessRequest):
             }
         )
     
-    return file_chunks
+    file_chunks_records= [
+        DataChunk(
+        chunk_text = chunk.page_content,
+        chunk_metadata = chunk.metadata,
+        chunk_order  = i + 1,
+        chunk_project_id= project.id
+    )
+    for i,chunk in enumerate(file_chunks)
+    ]
+
+    chunk_model = ChunkModel(
+        db_client=request.app.db_client
+    )
+
+    no_records = chunk_model.insert_many_chunks(chunks=file_chunks_records)
+
+    return JSONResponse(
+        content={
+            "signal": ResponseSignal.PROCESSING_SUCCESS.value,
+            "inserted_chunks": no_records
+        }
+    )
+

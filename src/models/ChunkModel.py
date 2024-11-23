@@ -38,6 +38,8 @@ class ChunkModel(BaseDataModel):
             await self.collection.bulk_write(operations)
 
         return len(chunks)
+    
+    
 
     
     
