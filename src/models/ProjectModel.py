@@ -9,20 +9,28 @@ class ProjectModel(BaseDataModel):
         self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.value]
 
     async def create_project(self, project : Project):
-        result = await self.collection.insert_one(project.model_dump())
-        project._id = result.inserted_id
+        # Insert into MongoDB
+        data=project.model_dump(by_alias=True, exclude_unset=True)
+        print("Data to insert:",data )
+        result = await self.collection.insert_one(data)
+        print(result)
+        # Set the auto-generated `_id` back to the Pydantic model
+        project.id = result.inserted_id
         return project
     
-    async def get_project_or_create_one(self, project_id:str):
+    async def get_project_or_create_one(self, project_id: str):
+        print("Looking for project_id:", project_id)  # Debugging step
         record = await self.collection.find_one({
-                                                    "project_id":project_id
-                                                 })
-        
-        if record is None :
-            #create new project
-            project = Project(project_id=project_id)
-            project = await self.create_project(project=project)
+            "project_id": project_id
+        })
+        print("Record found:", record)  # Debugging step
 
+        if record is None:
+            # create new project
+            project = Project(project_id=project_id)
+            print("Created new Project object:", project.model_dump(by_alias=True))  # Debugging step
+            project = await self.create_project(project=project)
+            print("Inserted Project into DB:", project.model_dump(by_alias=True))  # Debugging step
             return project
         
         return Project(**record)

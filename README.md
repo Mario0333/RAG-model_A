@@ -32,6 +32,14 @@ $ cp .env.example .env
 ```
 
 Set your enviroments variables in the `.env` file. Like 'OPENAI_API_KEY` value .
+### Activate you env 
+```bash
+$ conda activate mini-rag2
+```
+###Change location to src 
+```bash
+$ cd src
+```
 
 ### Run the fastApi server 
 ```bash
