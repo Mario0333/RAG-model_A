@@ -70,6 +70,7 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
     chunk_size = process_request.chunk_size
     overlab_size = process_request.overlap_size
     do_reset = process_request.do_reset
+
     """
     #check if the project not in assets
     if not ErrorController().project_found(project_id):
@@ -80,6 +81,7 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
             }
         )
         """
+    
     #check if the file not in project dir 
     if not ErrorController().file_found(project_id,file_id):
         return JSONResponse(
@@ -91,6 +93,9 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
     
     
     project_model = ProjectModel(
+        db_client=request.app.db_client
+    )
+    chunk_model = ChunkModel(
         db_client=request.app.db_client
     )
 
@@ -127,9 +132,9 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
         for i, chunk in enumerate(file_chunks)
     ]
 
-    chunk_model = ChunkModel(
-        db_client=request.app.db_client
-    )
+    if do_reset == 1:
+        print("deleting . . .") #depugging step
+        _ = await chunk_model.delete_chunks_by_project_id(project_id=project.id)
 
     no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
 
