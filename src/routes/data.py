@@ -79,6 +79,7 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
                 "signal":ResponseSignal.PROCESSING_PROJECT_NOT_FOUND.value
             }
         )
+        """
     #check if the file not in project dir 
     if not ErrorController().file_found(project_id,file_id):
         return JSONResponse(
@@ -87,7 +88,7 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
                 "signal":ResponseSignal.PROCESSING_FILE_NOT_FOUND.value
             }
         )    
-    """
+    
     
     project_model = ProjectModel(
         db_client=request.app.db_client
@@ -116,25 +117,25 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
             }
         )
     
-    file_chunks_records= [
+    file_chunks_records = [
         DataChunk(
-        chunk_text = chunk.page_content,
-        chunk_metadata = chunk.metadata,
-        chunk_order  = i + 1,
-        chunk_project_id= project.id
-    )
-    for i,chunk in enumerate(file_chunks)
+            chunk_text=chunk.page_content,
+            chunk_metadata=chunk.metadata,
+            chunk_order=i+1,
+            chunk_project_id=project.id,
+        )
+        for i, chunk in enumerate(file_chunks)
     ]
 
     chunk_model = ChunkModel(
         db_client=request.app.db_client
     )
 
-    no_records = chunk_model.insert_many_chunks(chunks=file_chunks_records)
+    no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
 
     return JSONResponse(
         content={
-            "signal": ResponseSignal.PROCESSING_SUCCESS.value,
+            "signal": ResponseSignal.PROCESSING_SUCCEDED.value,
             "inserted_chunks": no_records
         }
     )

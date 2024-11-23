@@ -3,6 +3,7 @@ from .db_schemes import DataChunk
 from .enums.DataBaseEnum import DataBaseEnum
 from bson.objectid import ObjectId
 from pymongo import InsertOne
+from fastapi.responses import JSONResponse
 
 class ChunkModel(BaseDataModel):
     
@@ -26,12 +27,12 @@ class ChunkModel(BaseDataModel):
         return DataChunk(**result)
     
     async def insert_many_chunks(self, chunks:list , batch_size : int=100):
-
+        
         for i in range(0,len(chunks), batch_size):
             batch = chunks[i:i+batch_size]
 
             operations = [
-                InsertOne(document=chunk)
+                InsertOne(document=chunk.model_dump(by_alias=True, exclude_unset=True))
                 for chunk in batch
             ]
 
