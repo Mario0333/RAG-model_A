@@ -19,20 +19,25 @@ class ProjectModel(BaseDataModel):
         """
         instance = cls(db_client)
         await instance.init_collection()
+        print("instance created succefully !!")
         return instance  
       
 
     async def init_collection(self):
         all_collections = await self.db_client.list_collection_names()
-        if DataBaseEnum.COLLECTION_PROJECT_NAME.value not in all_collections :
+        if DataBaseEnum.COLLECTION_PROJECT_NAME.value not in all_collections:
             self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.value]
-            indexes = Project.get_indexes()
-            for index in indexes :
+        indexes = Project.get_indexes()
+        for index in indexes:
+            try:
+                print(f"Creating index: {index['name']}")
                 await self.collection.create_index(
                     index["key"],
                     name=index["name"],
-                    unique = index["unique"]
+                    unique=index["unique"]
                 )
+            except Exception as e:
+                print(f"Error creating index {index['name']}: {e}")
 
     async def create_project(self, project : Project):
         # Insert into MongoDB

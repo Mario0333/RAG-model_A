@@ -22,11 +22,9 @@ class Project(BaseModel):
     def get_indexes(cls):
         return [
             {
-                "key":[
-                    ("project_id", 1)
-                ],
-                "name": "project_id_index_1",
-                "unique": True
+                "key": [("chunk_project_id", 1)],
+                "name": "chunk_project_id_index_1",
+                "unique": False
             }
         ]
 
