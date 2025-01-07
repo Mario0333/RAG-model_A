@@ -81,7 +81,7 @@ async def upload_data(request:Request ,project_id: str, file: UploadFile, app_se
 
 @data_router.post("/process/{project_id}")
 async def process_endpoint(request : Request,project_id: str, process_request:ProcessRequest):
-    file_id = process_request.file_id
+    # file_id = process_request.file_id
     chunk_size = process_request.chunk_size
     overlab_size = process_request.overlap_size
     do_reset = process_request.do_reset
@@ -118,6 +118,14 @@ async def process_endpoint(request : Request,project_id: str, process_request:Pr
         project_id=project_id
     )
     
+
+    project_file_ids = []
+    if process_request.file_id is not None:
+        project_file_ids.append(process_request.file_id)
+
+    else:
+        
+
     #start Processing
     processcontroller = ProcessController(project_id= project_id)
 
