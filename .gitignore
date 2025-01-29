@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+testing.ipynb
 # C extensions
 *.so
 .venv
